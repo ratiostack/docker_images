@@ -1,8 +1,6 @@
-# Baixa a imagem do ubuntu
 FROM ubuntu:14.04.5
-LABEL maintainer="Ederson Ferreira <ederson.dev@gmail.com>"
+LABEL maintainer="Ratiostack  <contac@ratiostack.com>"
 
-# Instalação dos pacotes
 RUN apt-get update && apt-get install -y \
 apache2 \
 php5 \
@@ -24,7 +22,6 @@ nano \
 && apt-get clean && apt-get autoclean && apt-get autoremove \
 && rm -rf /var/lib/apt/lists/*
 
-# Habilita o modo de reescrita do apache
 RUN a2enmod rewrite
 
 ENV APACHE_LOCK_DIR="/var/lock"
@@ -37,20 +34,17 @@ LABEL Description="Webserver php 5.5.9"
 
 VOLUME /var/www/html
 
-ENV TZ=America/Sao_Paulo
+ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Copia o arquivo de virtualhost
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Install composer
 WORKDIR /usr/local/bin/
 RUN curl -sS https://getcomposer.org/installer | php
 RUN chmod +x composer.phar
 RUN mv composer.phar composer
 RUN composer self-update
 
-# Set path bin
 WORKDIR /root
 RUN echo 'export PATH="$PATH:$HOME/.composer/vendor/bin"' >> ~/.bashrc
 
